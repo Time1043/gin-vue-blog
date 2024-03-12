@@ -16,8 +16,8 @@ func InitRouter() *gin.Engine {
 		context.String(200, "xxx")
 	})  // 验证成功*/
 
-	apiRouterGroup := router.Group("api") // 127.0.0.1:8080/api
-	routerGroupApp := RouterGroup{apiRouterGroup}
-	routerGroupApp.SettingsRouter() // 系统配置api
+	apiRouterGroup := router.Group("api")         // 路由分组 127.0.0.1:8080/api
+	routerGroupApp := RouterGroup{apiRouterGroup} // 路由分层
+	routerGroupApp.SettingsRouter()               // 系统配置api
 	return router
 }

@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type User2Collects struct {
+type UserCollectModel struct {
 	/*
 		自定义第三张表，记录用户什么时候收藏了什么文章
 	*/

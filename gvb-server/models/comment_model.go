@@ -16,5 +16,5 @@ type CommentModel struct {
 	Article            ArticleModel    `json:"-" gorm:"foreignKey:ArticleID"`                   // 关联文章
 	ArticleID          uint            `json:"article_id"`                                      // 文章id
 	User               UserModel       `json:"user"`                                            // 关联用户
-	UserID             uint            `json:"user_id" gorm:"size:10"`                          // 评论用户
+	UserID             uint            `json:"user_id"`                                         // 评论用户
 }

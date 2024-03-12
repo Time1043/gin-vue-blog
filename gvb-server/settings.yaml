@@ -18,6 +18,10 @@ system:
   port: 8080
   env: release
 
+upload:
+  size: 2
+  path: uploads/file/xxx
+
 site_info:
   create_at: "2024-03-12"
   bei_an: lef10-7
@@ -46,6 +50,7 @@ email:
   use_ssl: true
   user_tls: true
 qi_niu:
+  enable: false
   access_key: UMM-xx-FdRIf-xx
   secret_key: xx
   bucket: time1043

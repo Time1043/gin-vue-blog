@@ -14,7 +14,6 @@ func main() {
 
 	// 命令行参数绑定
 	option := flag.Parse()
-	// fmt.Println(option) // true
 	if flag.IsWebStop(option) {
 		flag.SwitchOption(option)
 		return
@@ -28,4 +27,5 @@ func main() {
 	if err != nil {
 		global.Log.Fatalf(err.Error())
 	}
+
 }

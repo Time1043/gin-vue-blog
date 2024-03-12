@@ -1,4 +1,3 @@
 package settings_api
 
-type SettingApi struct {
-}
+type SettingApi struct{}

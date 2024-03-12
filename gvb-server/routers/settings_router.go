@@ -7,4 +7,6 @@ import (
 func (router RouterGroup) SettingsRouter() {
 	settingApi := api.ApiGroupApp.SettingApi
 	router.GET("settings", settingApi.SettingsInfoView) // 127.0.0.1:8080/api/settings
+	router.PUT("settings", settingApi.SettingsInfoUpdateView)
+
 }

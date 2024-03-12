@@ -6,8 +6,17 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"strings"
 	"time1043/gvb-server/global"
 	"time1043/gvb-server/models/res"
+	"time1043/gvb-server/utils"
+)
+
+var (
+	// 图片上传的白名单
+	WhiteImageList = []string{
+		"jpg", "png", "jpeg", "ico", "tiff", "gif", "svg", "webp",
+	}
 )
 
 // 有的图片上传成功有的失败 需要给用户返回响应
@@ -42,13 +51,25 @@ func (ImagesApi) ImageUploadView(ctx *gin.Context) {
 
 	var resList []FileUploadResponse
 	for _, file := range fileList {
-		filePath := path.Join(basePath, file.Filename)
+		// 判断尾缀白名单
+		filename := file.Filename
+		nameList := strings.Split(filename, ".")
+		suffix := strings.ToLower(nameList[len(nameList)-1])
+		if !utils.InList(suffix, WhiteImageList) {
+			resList = append(resList, FileUploadResponse{
+				FileName:  filename,
+				IsSuccess: false,
+				Msg:       "非法文件",
+			})
+			continue
+		}
 
 		// 判断文件的大小 太大了就失败
+		filePath := path.Join(basePath, filename)
 		size := float64(file.Size) / float64(1024*1024)
 		if size >= float64(global.Config.Upload.Size) {
 			resList = append(resList, FileUploadResponse{
-				FileName:  file.Filename,
+				FileName:  filename,
 				IsSuccess: false,
 				Msg:       fmt.Sprintf("图片大小超过设定大小，当前大小为：%.2f MB，设定大小为：%d MB", size, global.Config.Upload.Size),
 			})
@@ -59,7 +80,7 @@ func (ImagesApi) ImageUploadView(ctx *gin.Context) {
 		if err != nil {
 			global.Log.Error(err)
 			resList = append(resList, FileUploadResponse{
-				FileName:  file.Filename,
+				FileName:  filename,
 				IsSuccess: true,
 				Msg:       err.Error(),
 			})

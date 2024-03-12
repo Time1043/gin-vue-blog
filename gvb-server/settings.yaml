@@ -43,8 +43,8 @@ email:
   user: xxx@qq.com
   password: xxx
   default_from_email: time1043
-  use_ssl: xx
-  user_tls: xx
+  use_ssl: true
+  user_tls: true
 qi_niu:
   access_key: UMM-xx-FdRIf-xx
   secret_key: xx
@@ -59,4 +59,4 @@ jwt:
 qq:
   app_id: "xx"
   key: xx
-  redirect: http://xx.xx.com/login?flag=qq
+  redirect: https://xx.xx.com/login?flag=qq

@@ -3,11 +3,13 @@ package images_api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 	"io/fs"
 	"os"
 	"path"
 	"strings"
 	"time1043/gvb-server/global"
+	"time1043/gvb-server/models"
 	"time1043/gvb-server/models/res"
 	"time1043/gvb-server/utils"
 )
@@ -76,7 +78,27 @@ func (ImagesApi) ImageUploadView(ctx *gin.Context) {
 			continue
 		}
 
-		err := ctx.SaveUploadedFile(file, filePath)
+		// md5检验图片内容
+		fileObj, err := file.Open()
+		if err != nil {
+			global.Log.Error(err)
+		}
+		byteData, err := io.ReadAll(fileObj)
+		imageHash := utils.Md5(byteData)
+		// 根据md5值去数据库中查 是否重复
+		var bannerModel models.BannerModel
+		err = global.DB.Take(&bannerModel, "hash = ?", imageHash).Error
+		if err == nil { // 找到重复的
+			resList = append(resList, FileUploadResponse{
+				FileName:  bannerModel.Path,
+				IsSuccess: false,
+				Msg:       "图片已存在",
+			})
+			continue
+		}
+
+		// 文件写入
+		err = ctx.SaveUploadedFile(file, filePath)
 		if err != nil {
 			global.Log.Error(err)
 			resList = append(resList, FileUploadResponse{
@@ -91,6 +113,13 @@ func (ImagesApi) ImageUploadView(ctx *gin.Context) {
 			FileName:  filePath,
 			IsSuccess: true,
 			Msg:       "上传成功",
+		})
+
+		// 图片写入数据库
+		global.DB.Create(&models.BannerModel{
+			Path: filePath,
+			Hash: imageHash,
+			Name: filename,
 		})
 
 	}
